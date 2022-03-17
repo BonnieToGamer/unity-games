@@ -1,0 +1,5 @@
+# Space Race
+
+[![Available on itch.io](https://img.shields.io/badge/Itch.io-FA5C5C?style=for-the-badge&logo=itch.io&logoColor=white)](https://bonnietogamer.itch.io/space-race)
+
+***Space Race*** is an [arcade game](https://en.wikipedia.org/wiki/Arcade_game) developed by [Atari, Inc](https://en.wikipedia.org/wiki/Atari,_Inc.). and released on July 16, 1973. It was the second game by the company, after [Pong](https://en.wikipedia.org/wiki/Pong) (1972), which marked the beginning of the commercial [video game industry](https://en.wikipedia.org/wiki/Video_game_industry). In the game, two players each control a rocket ship, with the goal of being the first to move their ship from the bottom of the screen to the top. Along the way are asteroids, which the players must avoid. Space Race was the first racing arcade video game and the first game with a goal of crossing the screen while avoiding obstacles.
