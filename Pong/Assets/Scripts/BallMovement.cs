@@ -5,29 +5,37 @@ using UnityEngine.UI;
 
 public class BallMovement : MonoBehaviour
 {
-    public Rigidbody2D Rigidbody;
-    public int Speed = 10;
-    public GameObject PaddleLeft;
-    public GameObject PaddleRight;
-    public Text ScoreTextRight;
-    public Text ScoreTextLeft;
-    public AudioSource AudioSource;
-    public AudioClip PaddleSound;
-    public AudioClip WallSound;
-    public AudioClip ScoreSound;
-    public ParticleSystem ExplosionParticle;
+    public bool GoingLeft { get; private set; }
 
+    [SerializeField] private bool newBounceMethod = true;
+    [SerializeField] private int Speed = 10;
+    [SerializeField] private GameObject PaddleLeft;
+    [SerializeField] private GameObject PaddleRight;
+    [SerializeField] private Text ScoreTextRight;
+    [SerializeField] private Text ScoreTextLeft;
+    [SerializeField] private AudioSource AudioSource;
+    [SerializeField] private AudioClip PaddleSound;
+    [SerializeField] private AudioClip WallSound;
+    [SerializeField] private AudioClip ScoreSound;
+    [SerializeField] private ParticleSystem ExplosionParticle;
+
+    private Rigidbody2D Rigidbody;
     private int rightScore = 0;
     private int leftScore = 0;
     private System.Random rand;
+    private bool isGhost = false;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Init(bool isGhost)
     {
-        rand = new System.Random();
+        this.isGhost = isGhost;
         Rigidbody = GetComponent<Rigidbody2D>();
 
-        Invoke("StartBall", 2);
+        rand = new System.Random();
+
+        if (isGhost)
+            StartBall();
+        else
+            Invoke(nameof(StartBall), 2);
     }
 
     void ResetBall()
@@ -39,7 +47,7 @@ public class BallMovement : MonoBehaviour
     void RestartGame()
     {
         ResetBall();
-        Invoke("StartBall", 1);
+        Invoke(nameof(StartBall), 1);
     }
 
 
@@ -53,29 +61,51 @@ public class BallMovement : MonoBehaviour
         velocityX = rand.Next(2) == 1 ? -velocityX : velocityX;
         velocityY = rand.Next(2) == 1 ? -velocityY : velocityY;
 
+        GoingLeft = velocityX < 0;
+
         Rigidbody.velocity = new Vector2(velocityX, velocityY);
-        AudioSource.PlayOneShot(WallSound);
+
+        if (!isGhost)
+            AudioSource.PlayOneShot(WallSound);
     }
 
-    // Update is called once per frame
-    void Update()
+    private float HitFactor(Vector2 ballpos, Vector2 paddlePos, float paddleHeight)
     {
-
+        return (ballpos.y - paddlePos.y) / paddleHeight;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (isGhost)
+            return;
 
-        if (collision.gameObject.name == PaddleLeft.gameObject.name || collision.gameObject.name == PaddleRight.gameObject.name)
+        // collision with paddle(s)
+        if (collision.gameObject.name == PaddleLeft.name || collision.gameObject.name == PaddleRight.name)
         {
+            GoingLeft = !GoingLeft;
             AudioSource.PlayOneShot(PaddleSound);
+
             Vector2 vel;
-            vel.x = Rigidbody.velocity.x;
-            vel.y = (Rigidbody.velocity.y / 2) + (collision.collider.attachedRigidbody.velocity.y / 3);
+            if (!newBounceMethod)
+            {
+                vel.x = Rigidbody.velocity.x;
+                vel.y = (Rigidbody.velocity.y / 2) + (collision.collider.attachedRigidbody.velocity.y / 3);
+            }
+
+            else
+            {
+                float y = HitFactor(transform.position, collision.transform.position, collision.collider.bounds.size.y);
+
+                vel = new Vector2((collision.gameObject.name == PaddleLeft.name ? 1 : -1) * rand.Next(1, 2), y).normalized;
+
+                vel *= Speed;
+            }
+
             Rigidbody.velocity = vel;
         }
 
-        else if (collision.gameObject.tag == "Left")
+        // collision with left wall
+        else if (collision.gameObject.CompareTag("Left"))
         {
             PlayDeathAnimation();
             rightScore++;
@@ -83,7 +113,8 @@ public class BallMovement : MonoBehaviour
             RestartGame();
         }
 
-        else if (collision.gameObject.tag == "Right")
+        // collision with right wall
+        else if (collision.gameObject.CompareTag("Right"))
         {
             PlayDeathAnimation();
             leftScore++;
@@ -91,6 +122,7 @@ public class BallMovement : MonoBehaviour
             RestartGame();
         }
 
+        // collision with top or bottom wall
         else
         {
             AudioSource.PlayOneShot(WallSound);
@@ -102,5 +134,10 @@ public class BallMovement : MonoBehaviour
         AudioSource.PlayOneShot(ScoreSound);
         ExplosionParticle.transform.position = transform.position;
         ExplosionParticle.Play();
+    }
+
+    public void SetVelocity(Vector2 newVelocity)
+    {
+        Rigidbody.velocity = newVelocity;
     }
 }
