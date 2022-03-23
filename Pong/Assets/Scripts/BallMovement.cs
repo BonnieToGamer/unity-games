@@ -7,7 +7,7 @@ public class BallMovement : MonoBehaviour
 {
     public bool GoingLeft { get; private set; }
 
-    [SerializeField] private bool newBounceMethod = true;
+    public bool newBounceMethod = true;
     [SerializeField] private int Speed = 10;
     [SerializeField] private GameObject PaddleLeft;
     [SerializeField] private GameObject PaddleRight;
@@ -24,6 +24,8 @@ public class BallMovement : MonoBehaviour
     private int leftScore = 0;
     private System.Random rand;
     private bool isGhost = false;
+    private bool paused = false;
+    private Vector2 oldVelocity;
 
     public void Init(bool isGhost)
     {
@@ -50,6 +52,20 @@ public class BallMovement : MonoBehaviour
         Invoke(nameof(StartBall), 1);
     }
 
+    public void PauseBall()
+    {
+        paused = !paused;
+        if (paused)
+        {
+            oldVelocity = Rigidbody.velocity;
+            Rigidbody.velocity = Vector2.zero;
+        }
+
+        else 
+        {
+            Rigidbody.velocity = oldVelocity;
+        }
+    }
 
     void StartBall()
     {
@@ -86,7 +102,7 @@ public class BallMovement : MonoBehaviour
             AudioSource.PlayOneShot(PaddleSound);
 
             Vector2 vel;
-            if (!newBounceMethod)
+            if (newBounceMethod)
             {
                 vel.x = Rigidbody.velocity.x;
                 vel.y = (Rigidbody.velocity.y / 2) + (collision.collider.attachedRigidbody.velocity.y / 3);
