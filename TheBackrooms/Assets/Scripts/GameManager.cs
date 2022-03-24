@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
 		mazeInstance = Instantiate(MazePrefab) as Maze;
 		yield return StartCoroutine(mazeInstance.Generate());
 		playerInstance = Instantiate(playerPrefab) as Player;
+		playerInstance.Initialize(mazeInstance.GetCells());
 		playerInstance.SetLocation(mazeInstance.GetCell(mazeInstance.RandomCoordinates));
 	}
 

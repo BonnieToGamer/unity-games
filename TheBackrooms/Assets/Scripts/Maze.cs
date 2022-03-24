@@ -71,6 +71,11 @@ public class Maze : MonoBehaviour
 		}
 	}
 
+	public MazeCell[,] GetCells()
+	{
+		return cells;
+	}
+
 	private void DoFirstGenerationStep(List<MazeCell> activeCells)
 	{
 		MazeCell newCell = CreateCell(RandomCoordinates);

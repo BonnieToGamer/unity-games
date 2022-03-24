@@ -106,6 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2618914992847102446}
   - component: {fileID: 977811778579166268}
+  - component: {fileID: 1786868040172061388}
   m_Layer: 0
   m_Name: Maze Cell
   m_TagString: Untagged
@@ -140,3 +141,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44de44426c93665478a9122ce1f2edf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Coordinates:
+    x: 0
+    z: 0
+  edges:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  initializedEdgeCount: 0
+  room: {fileID: 0}
+--- !u!65 &1786868040172061388
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4726313132742445956}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.04051535, z: 1}
+  m_Center: {x: 0, y: -0.013955258, z: 0}

@@ -16,15 +16,20 @@ public class Player : MonoBehaviour
 	private MazeDirection currentDirection;
 	private Vector3 previousPosition;
 	private Quaternion previousRotation;
+	private MazeCell[,] maze;
 
 	void Start()
 	{
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 
+	public void Initialize(MazeCell[,] maze)
+	{
+		this.maze = maze;
+	}
+
 	public void SetLocation(MazeCell cell)
 	{
-		Debug.Log((new System.Diagnostics.StackTrace()).GetFrame(1).GetMethod().Name);
 		if (currentCell != null)
 			currentCell.OnPlayerExited();
 
@@ -78,6 +83,12 @@ public class Player : MonoBehaviour
 		return nearest;
 	}
 
+	private Vector3 GetClosestCells()
+	{
+		return maze.To1DArray<MazeCell>().OrderBy(x => Mathf.Abs((long)x.transform.localPosition.x - transform.localPosition.x))
+													 .OrderBy(z => Mathf.Abs((long)z.transform.localPosition.z - currentCell.transform.localPosition.z)).First().transform.localPosition;
+	}
+
 	private void SetCurrentCell(MazeCell cell)
 	{
 		if (currentCell != null)
@@ -85,6 +96,7 @@ public class Player : MonoBehaviour
 		Debug.Log("previous cell: " + currentCell.Coordinates.ToString());
 		currentCell = cell;
 		Debug.Log("new cell: " + currentCell.Coordinates.ToString());
+		ShootRayCast();
 
 		currentCell.OnPlayerEntered();
 	}
@@ -99,7 +111,7 @@ public class Player : MonoBehaviour
 			GetCurrentDirection();
 		if (transform.localPosition != previousPosition)
 			MoveCurrentCell();
-
+		Debug.DrawRay(transform.position, Vector3.down);
 
 		// if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
 		// 	Move(currentDirection);
@@ -137,4 +149,10 @@ public class Player : MonoBehaviour
 		controller.Move(move * speed * Time.deltaTime);
 	}
 
+	void ShootRayCast()
+	{
+		RaycastHit hit;
+		bool ray = Physics.Raycast(transform.position, Vector3.down, out hit, 10);
+		Debug.Log(ray ? hit.transform.localPosition.ToString() : "nothing");
+	}
 }
