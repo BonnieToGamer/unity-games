@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Maze : MonoBehaviour
@@ -51,6 +52,11 @@ public class Maze : MonoBehaviour
 	public MazeCell GetCell(IntVector2 coordinates)
 	{
 		return cells[coordinates.x, coordinates.z];
+	}
+
+	public MazeCell GetCell(Vector3 coordinates)
+	{
+		return cells.To1DArray<MazeCell>().Select(x => x.transform.position == coordinates).ToArray()[0];
 	}
 
 	public IEnumerator Generate()

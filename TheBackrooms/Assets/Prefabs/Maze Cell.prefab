@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6241898272449176389}
   - component: {fileID: 7479241705337089828}
   - component: {fileID: 6969461011260311428}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Quad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,8 +106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2618914992847102446}
   - component: {fileID: 977811778579166268}
-  - component: {fileID: 1786868040172061388}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Maze Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -151,16 +150,3 @@ MonoBehaviour:
   - {fileID: 0}
   initializedEdgeCount: 0
   room: {fileID: 0}
---- !u!65 &1786868040172061388
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4726313132742445956}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.04051535, z: 1}
-  m_Center: {x: 0, y: -0.013955258, z: 0}
