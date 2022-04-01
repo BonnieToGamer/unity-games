@@ -94,9 +94,8 @@ public class Player : MonoBehaviour
 		if (currentCell != null)
 			currentCell.OnPlayerExited();
 		Debug.Log("previous cell: " + currentCell.Coordinates.ToString());
-		currentCell = cell;
+		currentCell = ShootRayCast();
 		Debug.Log("new cell: " + currentCell.Coordinates.ToString());
-		ShootRayCast();
 
 		currentCell.OnPlayerEntered();
 	}
