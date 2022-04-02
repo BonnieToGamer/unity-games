@@ -154,9 +154,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Stick: {fileID: 6396439220747616379, guid: cbb370846b027a64ba03764e0c5c23c2, type: 3}
   Point: {fileID: 7799330240394154329, guid: 41b08c767ed22f440b9629bb9f49e4b0, type: 3}
-  mainCamera: {fileID: 963194227}
   sim: {fileID: 724594411}
-  zSpawnOffset: 10
+  zSpawnOffset: 15
   pointerStickColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   IgnoredLayerMask:
     serializedVersion: 2
@@ -165,6 +164,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   rayLength: 100
+  whiteColor: {r: 1, g: 1, b: 0.96470594, a: 0}
+  redColor: {r: 1, g: 0.33333334, b: 0.5058824, a: 0}
+  greyColor: {r: 0.8078432, g: 0.81568635, b: 0.8980393, a: 0}
+  scrollSpeed: 2
 --- !u!4 &675517948
 Transform:
   m_ObjectHideFlags: 0
@@ -301,8 +304,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 281cd0f7f74cc834cb8320fb192f58a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravity: 2
-  numIterations: 100
+  gravity: 10
+  bounce: 0.1
+  friction: 0.999
+  numIterations: 5
+  wallCollisions: 0
+  useFriction: 0
 --- !u!4 &724594412
 Transform:
   m_ObjectHideFlags: 0

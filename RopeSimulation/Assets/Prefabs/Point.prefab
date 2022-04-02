@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 9d00ff74062a2a648a8868109b9e4570, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,3 +111,6 @@ MonoBehaviour:
   position: {x: 0, y: 0}
   previousPosition: {x: 0, y: 0}
   locked: 0
+  zOffset: 0
+  white: {r: 0, g: 0, b: 0, a: 0}
+  red: {r: 0, g: 0, b: 0, a: 0}

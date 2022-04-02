@@ -7,39 +7,79 @@ public class Simulation : MonoBehaviour
     public bool RunningSim { get; private set; }
 
     [SerializeField] private float gravity;
+    [SerializeField] private float bounce;
+    [SerializeField] private float friction;
     [SerializeField] private float numIterations;
+    [SerializeField] private bool wallCollisions;
+    [SerializeField] private bool useFriction;
 
-    private List<Point> prevPoints;
-    private List<Stick> prevSticks;
     private List<Point> points;
     private List<Stick> sticks;
+    private Rect ScreenSize;
 
     // Start is called before the first frame update
     void Start()
     {
-        points = prevPoints = new List<Point>();
-        sticks = prevSticks = new List<Stick>();
+        points = new List<Point>();
+        sticks = new List<Stick>();
+    }
+
+    public void CalculateScreenSize(float distance, Vector3 pointSize)
+    {
+        distance -= Camera.main.transform.position.z;
+        ScreenSize = new Rect
+        {
+            max = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, distance)) - (pointSize / 2),
+            min = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, distance)) + (pointSize / 2)
+        };
+
     }
 
     // Update is called once per frame
     void Update()
     {
         RunningSim = Input.GetKeyDown(KeyCode.Space) ? !RunningSim : RunningSim;
-
         if (RunningSim)
         {
-            Simulate(points.ToArray(), sticks.ToArray());
+            Simulate();
+            UpdatePoints();
+            UpdateSticks();
+        }
+
+        for (int i = 0; i < sticks.Count; i++)
+        {
+            Stick s = sticks[i];
+            if (s.pointA == null || s.pointB == null)
+            {
+                RemoveStick(s);
+                Destroy(s.gameObject);
+            }
         }
     }
 
-    public void AddPoint(float x, float y)
+    public void AddPoint(Point p)
     {
-        points.Add(new Point(x, y));
+        points.Add(p);
+    }
+
+    public Point GetPoint(Vector2 pos)
+    {
+        return points.Find(p => p.position == pos);
     }
 
     public void AddStick(Stick stick)
     {
         sticks.Add(stick);
+    }
+
+    public void RemoveStick(Stick stick)
+    {
+        sticks.Remove(stick);
+    }
+
+    public void RemovePoint(Point point)
+    {
+        points.Remove(point);
     }
 
     public void SetLocked(float x, float y)
@@ -55,42 +95,106 @@ public class Simulation : MonoBehaviour
         points[index] = p;
     }
 
-    void Simulate(Point[] points, Stick[] sticks)
+    void Simulate()
     {
-        for (int i = 0; i < points.Length; i++)
-        {
-            Point p = points[i];
-            Debug.Log(points[i].position.y);
+        sticks = Shuffle(sticks);
 
+        // update points
+        foreach (Point p in points)
+        {
             if (!p.locked)
             {
                 Vector2 positionBeforeUpdate = p.position;
-                p.position += p.position - p.previousPosition;
+                if (useFriction)
+                    p.position += (p.position - p.previousPosition) * friction;
+                else
+                    p.position += p.position - p.previousPosition;
                 p.position += gravity * Time.deltaTime * Time.deltaTime * Vector2.down;
                 p.previousPosition = positionBeforeUpdate;
             }
-
-            points[i] = p;
-            Debug.Log(points[i].position.y);
         }
 
-        for (int i = 0; i < sticks.Length; i++)
+        for (int i = 0; i < numIterations; i++)
         {
-            for (int j = 0; j < numIterations; j++)
+            // update sticks
+            foreach (Stick stick in sticks)
             {
-                Stick stick = sticks[i];
-
                 Vector2 stickCentre = (stick.pointA.position + stick.pointB.position) / 2;
                 Vector2 stickDir = (stick.pointA.position - stick.pointB.position).normalized;
-
                 if (!stick.pointA.locked)
                     stick.pointA.position = stickCentre + stickDir * stick.length / 2;
-
                 if (!stick.pointB.locked)
-                    stick.pointB.position = stickCentre + stickDir * stick.length / 2;
+                    stick.pointB.position = stickCentre - stickDir * stick.length / 2;
+            }
 
-                sticks[i] = stick;
+            // constraint points
+            foreach (Point p in points)
+            {
+                Vector2 v;
+
+                if (useFriction)
+                    v = (p.position - p.previousPosition) * friction;
+                else
+                    v = p.position - p.previousPosition;
+
+                if (!p.locked && wallCollisions)
+                {
+                    if (p.position.x > ScreenSize.xMax)
+                    {
+                        p.position.x = ScreenSize.xMax;
+                        p.previousPosition.x = p.position.x + v.x * bounce;
+                    }
+
+                    else if (p.position.x < ScreenSize.xMin)
+                    {
+                        p.position.x = ScreenSize.xMin;
+                        p.previousPosition.x = p.position.x + v.x * bounce;
+                    }
+
+                    if (p.position.y > ScreenSize.yMax)
+                    {
+                        p.position.y = ScreenSize.yMax;
+                        p.previousPosition.y = p.position.y + v.x * bounce;
+                    }
+
+                    else if (p.position.y < ScreenSize.yMin)
+                    {
+                        p.position.y = ScreenSize.yMin;
+                        p.previousPosition.y = p.position.y + v.x * bounce;
+                    }
+                }
             }
         }
+    }
+
+    void UpdatePoints()
+    {
+        for (int i = 0; i < points.Count; i++)
+        {
+            points[i].UpdatePosition();
+        }
+    }
+
+    void UpdateSticks()
+    {
+        for (int i = 0; i < sticks.Count; i++)
+        {
+            sticks[i].UpdatePosition();
+        }
+    }
+
+    List<T> Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+
+        return list;
     }
 }
