@@ -6,12 +6,12 @@ public class Simulation : MonoBehaviour
 {
     public bool RunningSim { get; private set; }
 
-    [SerializeField] private float gravity;
-    [SerializeField] private float bounce;
-    [SerializeField] private float friction;
-    [SerializeField] private float numIterations;
-    [SerializeField] private bool wallCollisions;
-    [SerializeField] private bool useFriction;
+    [SerializeField] private float gravity = 10f;
+    [SerializeField] private float bounce = 0.1f;
+    [SerializeField] private float friction = 0.999f;
+    [SerializeField] private float numIterations = 5f;
+    [SerializeField] private bool wallCollisions = true;
+    [SerializeField] private bool useFriction = true;
 
     private List<Point> points;
     private List<Stick> sticks;
@@ -105,10 +105,7 @@ public class Simulation : MonoBehaviour
             if (!p.locked)
             {
                 Vector2 positionBeforeUpdate = p.position;
-                if (useFriction)
-                    p.position += (p.position - p.previousPosition) * friction;
-                else
-                    p.position += p.position - p.previousPosition;
+                p.position += (p.position - p.previousPosition) * (useFriction ? friction : 1);
                 p.position += gravity * Time.deltaTime * Time.deltaTime * Vector2.down;
                 p.previousPosition = positionBeforeUpdate;
             }
@@ -130,15 +127,10 @@ public class Simulation : MonoBehaviour
             // constraint points
             foreach (Point p in points)
             {
-                Vector2 v;
-
-                if (useFriction)
-                    v = (p.position - p.previousPosition) * friction;
-                else
-                    v = p.position - p.previousPosition;
-
                 if (!p.locked && wallCollisions)
                 {
+                    Vector2 v = (p.position - p.previousPosition) * (useFriction ? friction : 1);
+
                     if (p.position.x > ScreenSize.xMax)
                     {
                         p.position.x = ScreenSize.xMax;
