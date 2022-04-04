@@ -10,11 +10,13 @@ public class Player : MonoBehaviour
 	public Transform playerCamera;
 	public float mouseSensetivity = 100f;
 
+	[SerializeField] private LayerMask rayLayer;
+
 
 	private float xRotation;
 	private MazeCell currentCell;
 	private MazeDirection currentDirection;
-	private Vector3 previousPosition;
+	private Vector3 standingOnCell;
 	private Quaternion previousRotation;
 	private MazeCell[,] maze;
 
@@ -35,9 +37,10 @@ public class Player : MonoBehaviour
 
 		currentCell = cell;
 		controller.enabled = false;
-		transform.localPosition = new Vector3(cell.transform.localPosition.x, 0.33f, cell.transform.localPosition.z);
+		transform.localPosition = new Vector3(cell.transform.localPosition.x, transform.localPosition.y, cell.transform.localPosition.z);
 		controller.enabled = true;
 		currentCell.OnPlayerEntered();
+		standingOnCell = GetCellBelow();
 	}
 
 	private void Look(MazeDirection direction)
@@ -52,15 +55,6 @@ public class Player : MonoBehaviour
 		MazeCellEdge edge = currentCell.GetEdge(direction);
 		if (edge is MazePassage)
 			SetLocation(edge.otherCell);
-	}
-
-	private void MoveCurrentCell()
-	{
-		// Move
-		MazeCellEdge edge = currentCell.GetEdge(currentDirection);
-		// Debug.Log(edge is MazePassage);
-		if (edge is MazePassage)
-			SetCurrentCell(edge.otherCell);
 	}
 
 	private void GetCurrentDirection()
@@ -89,28 +83,40 @@ public class Player : MonoBehaviour
 													 .OrderBy(z => Mathf.Abs((long)z.transform.localPosition.z - currentCell.transform.localPosition.z)).First().transform.localPosition;
 	}
 
+	private void MoveCurrentCell()
+	{
+		// Move
+		MazeCellEdge edge = currentCell.GetEdge(currentDirection);
+		// Debug.Log(edge is MazePassage);
+		Debug.Log(currentCell.transform.position.ToString() + " " + standingOnCell.ToString());
+		if (edge is MazePassage && edge.transform.position == standingOnCell)
+			SetCurrentCell(edge.otherCell);
+	}
+
 	private void SetCurrentCell(MazeCell cell)
 	{
 		if (currentCell != null)
 			currentCell.OnPlayerExited();
 		Debug.Log("previous cell: " + currentCell.Coordinates.ToString());
-		currentCell = ShootRayCast();
-		Debug.Log("new cell: " + currentCell.Coordinates.ToString());
 
+		currentCell = cell;
+
+		Debug.Log("new cell: " + currentCell.Coordinates.ToString());
 		currentCell.OnPlayerEntered();
 	}
 
 	void Update()
 	{
-		previousPosition = transform.localPosition;
+		standingOnCell = GetCellBelow();
 		previousRotation = transform.rotation;
 		MouseAiming();
 		KeyboardMovement();
 		if (transform.rotation != previousRotation)
 			GetCurrentDirection();
-		if (transform.localPosition != previousPosition)
+		if (transform.localPosition != standingOnCell)
 			MoveCurrentCell();
-		Debug.DrawRay(transform.position, Vector3.down);
+		// Debug.DrawRay(transform.localPosition, Vector3.down * 2);
+		// ShootRayCast();
 
 		// if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
 		// 	Move(currentDirection);
@@ -148,10 +154,15 @@ public class Player : MonoBehaviour
 		controller.Move(move * speed * Time.deltaTime);
 	}
 
-	void ShootRayCast()
+	private Vector3 GetCellBelow()
 	{
 		RaycastHit hit;
-		bool ray = Physics.Raycast(transform.position, Vector3.down, out hit, 10);
-		Debug.Log(ray ? hit.transform.localPosition.ToString() : "nothing");
+		Ray ray = new Ray(transform.localPosition, Vector3.down);
+		if (Physics.Raycast(ray, hitInfo: out hit, 2))
+		{
+			return hit.transform.position;
+		}
+
+		return Vector3.zero;
 	}
 }
