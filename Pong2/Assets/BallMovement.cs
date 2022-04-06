@@ -15,9 +15,10 @@ public class BallMovement : MonoBehaviour
     public ParticleSystem ExplosionParticle;
 
     private Rigidbody2D Rigidbody;
-    private System.Random Random;
-    private int RightScore = 0;
-    private int LeftScore = 0;
+    private System.Random Random;   
+    private int scoreLeft = 0;
+    private int scoreRight = 0;
+
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,7 @@ public class BallMovement : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody2D>();
         Random = new System.Random();
 
-        Invoke("StartBall", 2);
+        Invoke(nameof(StartBall), 2);
     }
 
     void StartBall()
@@ -55,13 +56,16 @@ public class BallMovement : MonoBehaviour
         else if (collision.gameObject.CompareTag("Left"))
         {
             PlayDeathAnimation();
-            LeftScore++;
-            ScoreTextLeft.text = LeftScore
+            scoreRight++;
+            ScoreTextRight.text = scoreRight.ToString();
             RestartGame();
         }
 
         else if (collision.gameObject.CompareTag("Right"))
         {
+            PlayDeathAnimation();
+            scoreLeft++;
+            ScoreTextLeft.text = scoreLeft.ToString();
             RestartGame();
         }
     }
@@ -69,12 +73,19 @@ public class BallMovement : MonoBehaviour
     void RestartGame()
     {
         ResetBall();
-        Invoke("StartBall", 1);
+        Invoke(nameof(StartBall), 1);
     }
 
     void ResetBall()
     {
         Rigidbody.velocity = Vector2.zero;
         transform.position = Vector2.zero;
+    }
+
+    private void PlayDeathAnimation()
+    {
+        AudioSource.PlayOneShot(ScoreSound);
+        ExplosionParticle.transform.position = transform.position;
+        ExplosionParticle.Play();
     }
 }
