@@ -1,0 +1,174 @@
+﻿{
+  "song": "100 BPM",
+  "objects": [
+    {
+      "direction": [0, 1],
+	  "speed": 300,
+      "time": 0.3,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, -1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [-1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, 1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, -1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [-1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+	
+	{
+      "direction": [0, 1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, -1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [-1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, 1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [0, -1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+
+    {
+      "direction": [-1, 0],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    },
+	
+	{
+      "direction": [0, 1],
+	  "speed": 300,
+      "time": 0.6,
+	  "pos": [
+		0,
+		0
+	  ]
+    }
+  ]
+}
